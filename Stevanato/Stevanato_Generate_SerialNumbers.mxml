@@ -1,0 +1,22 @@
+<MovilizerRequest requestTrackingKey="" systemId="16580001" systemPassword="movilizerdemo" 
+	numResponses="1000" synchronousResponse="true" 
+	useAutoAcknowledge="false" xmlns="http://movilitas.com/movilizer/v14">
+	<moveletDelete moveletKey="STEVANATO_GENERATE_SN" moveletKeyExtension="" ignoreExtensionKey="false"/>
+	<moveletSet>
+		<movelet moveletKey="STEVANATO_GENERATE_SN" moveletKeyExtension="" namespace="" icon="31" moveletType="MULTI" initialQuestionKey="Q1_STEVANATO_GENERATE_SN" validTillDate="9999-12-31T22:59:59.000Z">
+		<question key="Q1_STEVANATO_GENERATE_SN" title="%%title%%" type="32" backNavigationAllowed="true" sortAnswersByClientKey="false" tableRowDetailsEnabled="true" tableOptionsEnabled="true">
+		    <answer key="Q1_STEVANATO_GENERATE_SN_A1" nextQuestionKey="END" action="NONE" dummyAnswer="false" sortAnswerItemsByClientKey="false">
+		      <text>%%URL%%</text>
+		    </answer>
+		    <onEnterAssignment>setPlaceholder("%%title%%", "Generate Serial Numbers");
+		                        setPlaceholder("%%URL%%", "http://epcis-test.movilizer.com/Portal/");</onEnterAssignment>
+		    <onLeaveOkPrepareAssignment/>
+		    <onLeaveOkPersistAssignment/>
+		    <onLeaveBackAssignment/>
+		    <onExternalEvent/>
+	  	</question>
+	  	<name>Generate Serial Numbers</name>
+		</movelet> 
+		<participant participantKey="carlos" name="carlos" deviceAddress="@carlos.benito1@movilizer.com"></participant>
+	</moveletSet>  
+</MovilizerRequest>

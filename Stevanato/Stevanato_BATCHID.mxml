@@ -1,0 +1,83 @@
+<MovilizerRequest requestTrackingKey="" systemId="16580001" systemPassword="movilizerdemo" 
+	numResponses="1000" synchronousResponse="true" 
+	useAutoAcknowledge="false" xmlns="http://movilitas.com/movilizer/v14">
+	<moveletDelete moveletKey="STEVANATO_BATCHID_MANAGMENT" moveletKeyExtension="" ignoreExtensionKey="false"/>
+	<moveletDelete moveletKey="EXTERNAL_EVENT_SCAN" moveletKeyExtension="" ignoreExtensionKey="false"/>
+	<moveletSet>
+		<movelet moveletKey="STEVANATO_BATCHID_MANAGMENT" moveletKeyExtension="" namespace="" icon="31" moveletType="MULTI" initialQuestionKey="Q1_BATCHID_TABLE" validTillDate="9999-12-31T22:59:59.000Z">
+	
+  <question key="Q0_ADD_BATCHID" title="%title%" type="5" backNavigationAllowed="true" sortAnswersByClientKey="false" tableRowDetailsEnabled="true" tableOptionsEnabled="true" labelAlignment="CENTER" valueAlignment="CENTER">
+    <answer columnSizeType="LEFT" key="Q0_ADD_BATCHID_A1" nextQuestionKey="Q1_BATCHID_TABLE" action="NONE" triggerScreenValueChangedEvent="false" timerBasedScreenValueChangedEvent="false" dummyAnswer="false" sortAnswerItemsByClientKey="false" valueAlignment="CENTER">
+      <text>Batch ID: </text>
+    </answer>
+    <onEnterAssignment>
+    	setPlaceholder("%title%", "Create New Batch");
+    	$local:selectedBacthID = null;   
+    	setAnswerValue($answer:'Q0_ADD_BATCHID_A1', "");                           
+    </onEnterAssignment>
+    <onLeaveOkPersistAssignment>
+    	$local:selectedBacthID = getAnswerValue($answer:'Q0_ADD_BATCHID_A1');
+    	$global:batchID[$local:selectedBacthID] = $local:selectedBacthID;
+     </onLeaveOkPersistAssignment>
+  </question>
+  
+  <question key="Q1_BATCHID_TABLE" title="" type="9" tableRowDetailsEnabled="false" tableOptionsEnabled="false">
+		<answer attributeType="8" key="Q1_BATCHID_TABLE_A1" clientKey="0" nextQuestionKey="Q2_EXT_EVENT_MENU" colIndex="0" colWidth="-1" dummyAnswer="true">
+			<text>List of Batches</text>
+		</answer>
+		<onEnterAssignment>
+					for (i : $global:batchesToDelete)
+		        	{	
+		        		$global:batchID[i] = null;    				            	           			                 				             
+		        	}
+		        	$global:batchesToDelete = null;
+		        	for (i : $global:batchID)
+		            {
+		                addAnswer($answer:'Q1_BATCHID_TABLE_A1', i, $global:batchID[i]);
+						setAnswerValueByClientKey($answer:'Q1_BATCHID_TABLE_A1', i, $global:batchID[i]);
+		            }
+		</onEnterAssignment>
+
+		<complex linearGroupId="BATCH_CMPLX" gridGroupId="BATCH_CMPLX" groupTitle="Batch Managment" linearInnerScrollbar="false" gridInnerScrollbar="false" gridHorizontalLayout="false" linearPos="1" gridPosX="0" gridPosY="1"/>
+	</question>
+	<question key="Q2_EXT_EVENT_MENU" title="Options" type="6">
+		<answer key="Q4_EXT_EVENT_MENU_A1" nextQuestionKey="Q3_DELETE_BATCH">
+			<text>Delete Batch</text>
+		</answer>
+		<answer key="Q4_EXT_EVENT_MENU_A2" nextQuestionKey="Q0_ADD_BATCHID">
+			<text>Add Batch</text>
+		</answer>
+		<answer key="Q4_EXT_EVENT_MENU_A3" nextQuestionKey="END">
+			<text>Exit</text>
+		</answer>
+		<complex linearGroupId="BATCH_CMPLX" gridGroupId="BATCH_CMPLX" groupTitle="Batch Managment" linearInnerScrollbar="false" gridInnerScrollbar="false" gridHorizontalLayout="false" linearPos="2" gridPosX="0" gridPosY="2"/>
+	</question>
+	<question key="Q3_DELETE_BATCH" title="Select Batches to delete:" type="4">
+		<answer key="Q3_DELETE_BATCH_A1" nextQuestionKey="Q1_BATCHID_TABLE" dummyAnswer="true">
+			<text/>
+		</answer>
+		<text>Select UIDs</text>
+		<onEnterAssignment>
+		         	$global:batchesToDelete = null;		       
+		        	for (i : $global:batchID)
+		            {
+		                addAnswer($answer:'Q3_DELETE_BATCH_A1', i, $global:batchID[i]);
+		                setAnswerValueByClientKey($answer:'Q3_DELETE_BATCH_A1', i, $global:batchID[i]);				                 				               
+		            }
+		</onEnterAssignment>
+		<onLeaveOkPersistAssignment>		            
+		           	for (i : $global:batchID)
+		            {
+		            	if (isAnswerSelectedByClientKey($answer:'Q3_DELETE_BATCH_A1', i))
+            			{
+            				$global:batchesToDelete[i] = getAnswerValueByClientKey($answer:'Q3_DELETE_BATCH_A1', i);                			
+            			}
+
+		            }		           
+		</onLeaveOkPersistAssignment>
+		</question>
+			<name>Batch Managment</name>
+		</movelet> 
+		<participant participantKey="carlos" name="carlos" deviceAddress="@carlos.benito1@movilizer.com"></participant>
+	</moveletSet>  
+</MovilizerRequest>

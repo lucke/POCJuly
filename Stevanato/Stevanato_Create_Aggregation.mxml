@@ -1,0 +1,178 @@
+<MovilizerRequest requestTrackingKey="" systemId="16580001" systemPassword="movilizerdemo" 
+	numResponses="1000" synchronousResponse="true" 
+	useAutoAcknowledge="false" xmlns="http://movilitas.com/movilizer/v14">
+	<moveletDelete moveletKey="STEVANATO_CREATE_AGGREGATION" moveletKeyExtension="" ignoreExtensionKey="false"/>
+	<moveletSet>
+		<movelet moveletKey="STEVANATO_CREATE_AGGREGATION" moveletKeyExtension="" namespace="" icon="31" moveletType="MULTI" initialQuestionKey="Q0_BATCHID_LIST" validTillDate="9999-12-31T22:59:59.000Z">
+
+		<question key="Q0_BATCHID_LIST" title="Select BatchID" type="4">
+		<answer key="Q0_BATCHID_LIST_A1" attributeType="10" nextQuestionKey="Q1_EXT_EVENT_PARENTID" dummyAnswer="true">
+			<text/>
+		</answer>
+		<text>Select Batch ID</text>
+		<validation type="ERROR">
+            <condition>($local:selectedBatchID ?eq null)</condition>
+            <text>Please Select a Batch.</text>
+        </validation>
+		<onEnterAssignment>
+			$global:parentID = null;
+			$local:selectedBatchID = null;	         		       
+			for (i : $global:batchID)
+		    {
+		        addAnswer($answer:'Q0_BATCHID_LIST_A1', i, $global:batchID[i]);
+		        setAnswerValueByClientKey($answer:'Q0_BATCHID_LIST_A1', i, $global:batchID[i]);				                 				               
+		    }
+		</onEnterAssignment>
+		<onLeaveOkPrepareAssignment>
+			for (i : $global:batchID)
+            {
+            	if (isAnswerSelectedByClientKey($answer:'Q0_BATCHID_LIST_A1', i))
+    			{
+    				$local:selectedBatchID = getAnswerValueByClientKey($answer:'Q0_BATCHID_LIST_A1', i);                			
+    			}
+
+            }
+		</onLeaveOkPrepareAssignment>
+		<onLeaveOkPersistAssignment/>	
+	</question>
+  
+  <question key="Q1_EXT_EVENT_PARENTID" title="%title%" type="5" backNavigationAllowed="true" sortAnswersByClientKey="false" tableRowDetailsEnabled="true" tableOptionsEnabled="true" labelAlignment="CENTER" valueAlignment="CENTER">
+    <answer columnSizeType="LEFT" key="Q1_EXT_EVENT_PARENTID_A1" nextQuestionKey="Q2_EXT_EVENT_TEXT_ITEM" action="NONE" triggerScreenValueChangedEvent="false" timerBasedScreenValueChangedEvent="false" dummyAnswer="false" sortAnswerItemsByClientKey="false" valueAlignment="CENTER">
+      <text>Parent ID: </text>
+    </answer>
+    	<validation position="0" type="ERROR">
+            <condition>($global:parentID ?eq null) ?or (isBlank($global:parentID))</condition>
+            <text>ParentID must not be empty.</text>
+        </validation>
+    <onEnterAssignment>    	
+    	setPlaceholder("%title%", "Parent ID Information");
+    	setAnswerValue($answer:'Q1_EXT_EVENT_PARENTID_A1', "");                                    
+    </onEnterAssignment>
+    <onLeaveOkPrepareAssignment>
+    	$global:parentID = getAnswerValue($answer:'Q1_EXT_EVENT_PARENTID_A1');
+     </onLeaveOkPrepareAssignment>
+  </question>
+  
+	<question key="Q2_EXT_EVENT_TEXT_ITEM" title="Scanned UID" type="5">
+		<answer key="Q2_EXT_EVENT_TEXT_ITEM_A1" nextQuestionKey="Q3_EXT_EVENT_TABLE" triggerScreenValueChangedEvent="true" timerBasedScreenValueChangedEvent="true">
+			<text>UID: </text>
+		</answer>
+		<onEnterAssignment>
+	         		focus($answer:"Q2_EXT_EVENT_TEXT_ITEM_A1", null);	         		
+		</onEnterAssignment>
+		<onScreenValueChangeEvent>					
+            		function($ref:answerKey, $ref:clientKey, $ref:value, $ref:data)
+            		{
+	                	if(!isBlank(value))
+	                	{
+	                			$global:globalScanList[value] = value;                		                    	
+	                    		triggerExternalEvent('updateTable', $global:globalScanList);
+	                    		setAnswerValue($answer:"Q2_EXT_EVENT_TEXT_ITEM_A1", ""); 
+	                    		focus($answer:"Q2_EXT_EVENT_TEXT_ITEM_A1", null);
+	                	}
+            		}
+		</onScreenValueChangeEvent>
+		<complex linearGroupId="EXT_EVENT_CMPLX" gridGroupId="EXT_EVENT_CMPLX" groupTitle="TC411" linearInnerScrollbar="false" gridInnerScrollbar="false" gridHorizontalLayout="false" linearPos="0" gridPosX="0" gridPosY="0"/>
+	</question>
+	<question key="Q3_EXT_EVENT_TABLE" title="" type="9" tableRowDetailsEnabled="false" tableOptionsEnabled="false">
+		<answer attributeType="8" key="Q3_EXT_EVENT_TEXT_ITEM_A1" clientKey="0" nextQuestionKey="Q4_EXT_EVENT_MENU" colIndex="0" colWidth="-1" dummyAnswer="true">
+			<text>List of UIDs</text>
+		</answer>
+		<onEnterAssignment>
+					for (i : $global:uidsToDelete)
+		        	{	
+		        		$global:globalScanList[i] = null;    				            	           			                 				             
+		        	}
+		        	$global:uidsToDelete = null;
+		        	for (i : $global:globalScanList)
+		            {
+		                addAnswer($answer:'Q3_EXT_EVENT_TEXT_ITEM_A1', i, $global:globalScanList[i]);
+ 						setAnswerValueByClientKey($answer:'Q3_EXT_EVENT_TEXT_ITEM_A1', i, $global:globalScanList[i]);	
+		            }
+		</onEnterAssignment>
+		<onExternalEvent>
+		            function($ref:evtSrc, $ref:data)
+		            {
+		                if(evtSrc == 'updateTable')
+		                {
+		                   for (i : data)
+				            {
+				                addAnswer($answer:'Q3_EXT_EVENT_TEXT_ITEM_A1', i, "");
+				                setAnswerValueByClientKey($answer:'Q3_EXT_EVENT_TEXT_ITEM_A1', i, data[i]);				                 				               
+				            }
+		                    consumeExternalEvent('updateTable');
+		                }
+		            }
+		</onExternalEvent>
+		<complex linearGroupId="EXT_EVENT_CMPLX" gridGroupId="EXT_EVENT_CMPLX" groupTitle="TC411" linearInnerScrollbar="false" gridInnerScrollbar="false" gridHorizontalLayout="false" linearPos="1" gridPosX="0" gridPosY="1"/>
+	</question>
+	<question key="Q4_EXT_EVENT_MENU" title="Options" type="6">
+		<answer key="Q4_EXT_EVENT_MENU_A1" nextQuestionKey="Q5_EXT_EVENT_DELETE_UIDS">
+			<text>Delete UIDs</text>
+		</answer>
+		<answer key="Q4_EXT_EVENT_MENU_A2" nextQuestionKey="END" action="FULLSYNC">
+			<text>Confirm operation</text>
+		</answer>
+		<answer key="Q4_EXT_EVENT_MENU_A3" nextQuestionKey="END">
+			<text>Cancel</text>
+		</answer>
+		<onEnterAssignment>
+			for (i : $global:uidsToDelete)
+        	{	
+        		$global:globalScanList[i] = null;    				            	           			                 				             
+        	}
+        	$global:uidsToDelete = null;
+        	for (i : $global:globalScanList)
+            {
+                addAnswer($answer:'Q3_EXT_EVENT_TEXT_ITEM_A1', i, $global:globalScanList[i]);
+				setAnswerValueByClientKey($answer:'Q3_EXT_EVENT_TEXT_ITEM_A1', i, data[i]);
+            }
+		</onEnterAssignment>
+		<onLeaveOkPersistAssignment>
+        			//Test
+					data["DATACONTAINER"] = "PACK";
+					data["ENTRY_PARENTID"] = $global:parentID;
+					data["ENTRY_ACTION"] = "ADD";
+					data["ENTRY_BIZSTEP"] = "urn:epcglobal:cbv:bizstep:packing";
+					data["ENTRY_DISPOSITION"] = "urn:epcglobal:cbv:disposition:active";
+					data["ENTRY_DOCUMENTS"] = "urn:stevanato:batch";
+					data["ENTRY_REF_DOCS"] = concat("urn:epc:id:gdti:",$local:selectedBatchID);
+					data["ENTRY_EPCLIST"] = $global:globalScanList;
+					data["ENTRY_LOCATION"] = "urn:epc:id:sgln:111112222233333.1";
+					data["ENTRY_READPOINT"] = "urn:epc:id:sgln:111112222233333.1.1";
+					data["ENTRY_EVENT_TIME"] = systemtime();
+
+					writeContainer("PACK", data, 0);
+
+		</onLeaveOkPersistAssignment>
+		<complex linearGroupId="EXT_EVENT_CMPLX" gridGroupId="EXT_EVENT_CMPLX" groupTitle="TC411" linearInnerScrollbar="false" gridInnerScrollbar="false" gridHorizontalLayout="false" linearPos="2" gridPosX="0" gridPosY="2"/>
+	</question>
+	<question key="Q5_EXT_EVENT_DELETE_UIDS" title="UIDs Selection" type="4">
+		<answer key="Q5_EXT_EVENT_DELETE_UIDS_A1" nextQuestionKey="Q2_EXT_EVENT_TEXT_ITEM" dummyAnswer="true">
+			<text/>
+		</answer>
+		<text>Select UIDs</text>
+		<onEnterAssignment>
+		         	$global:uidsToDelete = null;		       
+		        	for (i : $global:globalScanList)
+		            {
+		                addAnswer($answer:'Q5_EXT_EVENT_DELETE_UIDS_A1', i, $global:globalScanList[i]);
+		                setAnswerValueByClientKey($answer:'Q5_EXT_EVENT_DELETE_UIDS_A1', i, $global:globalScanList[i]);				                 				               
+		            }
+		</onEnterAssignment>
+		<onLeaveOkPersistAssignment>		            
+		           	for (i : $global:globalScanList)
+		            {
+		            	if (isAnswerSelectedByClientKey($answer:'Q5_EXT_EVENT_DELETE_UIDS_A1', i))
+            			{
+            				$global:uidsToDelete[i] = getAnswerValueByClientKey($answer:'Q5_EXT_EVENT_DELETE_UIDS_A1', i);                			
+            			}
+
+		            }		           
+		</onLeaveOkPersistAssignment>
+	</question>
+			<name>Create Aggregation</name>
+		</movelet> 
+		<participant participantKey="carlos" name="carlos" deviceAddress="@carlos.benito1@movilizer.com"></participant>
+	</moveletSet>  
+</MovilizerRequest>
