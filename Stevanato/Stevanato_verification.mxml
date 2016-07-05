@@ -1,80 +1,74 @@
-<MovilizerRequest requestTrackingKey="" systemId="16580001" systemPassword="movilizerdemo" 
+<MovilizerRequest requestTrackingKey="" systemId="50001" systemPassword="movilizer" 
 	numResponses="1000" synchronousResponse="true" 
 	useAutoAcknowledge="false" xmlns="http://movilitas.com/movilizer/v14">
 	<moveletDelete moveletKey="STEVANATO_VERIFICATION" moveletKeyExtension="" ignoreExtensionKey="false"/>
 	<moveletSet>
-		<movelet moveletKey="STEVANATO_VERIFICATION" moveletKeyExtension="" namespace="" icon="31" moveletType="MULTI" initialQuestionKey="Q0_ESTEVANATO_VERIFICATION_SCAN_UID" validTillDate="9999-12-31T22:59:59.000Z">
-		<question key="Q0_ESTEVANATO_VERIFICATION_SCAN_UID" title="%title%" type="5" backNavigationAllowed="true" sortAnswersByClientKey="false" tableRowDetailsEnabled="true" tableOptionsEnabled="true" labelAlignment="CENTER" valueAlignment="CENTER">
-		    <answer columnSizeType="LEFT" key="Q0_ESTEVANATO_VERIFICATION_SCAN_UID_A1" nextQuestionKey="Q2_EPSILON_RESULT" action="NONE" triggerScreenValueChangedEvent="false" timerBasedScreenValueChangedEvent="false" dummyAnswer="false" sortAnswerItemsByClientKey="false" valueAlignment="CENTER">
+		<movelet moveletKey="STEVANATO_VERIFICATION" moveletKeyExtension="" namespace="" mafAppSpace="" privateNamespace="false" icon="31" moveletType="MULTI" metaMoveletType="NONE" initialQuestionKey="Q0_ESTEVANATO_VERIFICATION_SCAN_UID" transactional="false" validTillDate="9999-12-31T22:59:59.000Z" encryptionAlgorithm="" priority="0" moveletDownloadPriority="0" replyUploadPriority="0" syncPriority="NONE" visible="false" filterValue="" moveletVersion="0">
+		  <question key="Q0_ESTEVANATO_VERIFICATION_SCAN_UID" title="%title%" type="5" backNavigationAllowed="true" sortAnswersByClientKey="false" tableRowDetailsEnabled="true" tableOptionsEnabled="true" labelAlignment="CENTER" valueAlignment="CENTER">
+		    <answer columnSizeType="LEFT" key="Q0_ESTEVANATO_VERIFICATION_SCAN_UID_A1" nextQuestionKey="Q2_EPSILON_RESULT" action="NONE"   dummyAnswer="false" sortAnswerItemsByClientKey="false" valueAlignment="CENTER">
 		      <text>Scan UID: </text>
 		    </answer>
-		    	<validation position="0" type="ERROR">
-		            <condition>($local:uidScanned ?eq null) ?or (isBlank($local:uidScanned))</condition>
-		            <text>Please, scan a UID.</text>
-		        </validation>
-		    <onEnterAssignment>    	
-		    	setPlaceholder("%title%", "Verify Product");
-		    	$local:uidScanned = null;
-		    	setAnswerValue($answer:'Q0_ESTEVANATO_VERIFICATION_SCAN_UID_A1', "");                                    
-		    </onEnterAssignment>
-		    <onLeaveOkPrepareAssignment>
-		    	$local:uidScanned = getAnswerValue($answer:'Q0_ESTEVANATO_VERIFICATION_SCAN_UID_A1');
-			</onLeaveOkPrepareAssignment>
-			<onLeaveOkPersistAssignment>
-				containerID = concat("STEVANATO_CHECK_", systemtime()); 
-				data["OPERATION"] = "CHECK_EPC";
-				data["UID"] = $local:uidScanned;				
-				$local:currentContainer = containerID;
-				$local:info[$local:currentContainer]["DATA"] = data;
-				writeOnlineContainer($local:currentContainer, $local:info[$local:currentContainer]["DATA"]);
-        		triggerOnlineSync();    
-			</onLeaveOkPersistAssignment>
-		</question>
-		
-		  <question key="Q2_EPSILON_RESULT" title="EPSILON_SCREEN" type="41" backNavigationAllowed="true" sortAnswersByClientKey="false" tableRowDetailsEnabled="true" tableOptionsEnabled="true">
-		    <answer key="Q2_EPSILON_DUMMY" nextQuestionKey="Q3_GENERIC_SCREEN" position="0" action="NONE" dummyAnswer="false" sortAnswerItemsByClientKey="false"/>
-		   
-		    <onEnterAssignment>
-		    	$local:info[$local:currentContainer]["REPLY_DATA"] = readOnlineContainer($local:currentContainer);             
-	            if ($local:info[$local:currentContainer]["REPLY_DATA"] ?eq null)
-	            {
-	                $local:info[$local:currentContainer] = $local:info[$local:currentContainer]; 
-	            }
-		        </onEnterAssignment>
+		    <validation position="0" type="ERROR">
+		      <condition>($local:uidScanned ?eq null) ?or (isBlank($local:uidScanned))</condition>
+		      <text>Please, scan a UID.</text>
+		    </validation>
+		    <onEnterAssignment>setPlaceholder("%title%", "Verify Product");
+		                $local:uidScanned = null;
+		                $local:info = null;
+		                setAnswerValue($answer:'Q0_ESTEVANATO_VERIFICATION_SCAN_UID_A1', "");                                    
+		            </onEnterAssignment>
+		    <onLeaveOkPrepareAssignment>$local:uidScanned = getAnswerValue($answer:'Q0_ESTEVANATO_VERIFICATION_SCAN_UID_A1');
+		            </onLeaveOkPrepareAssignment>
+		    <onLeaveOkPersistAssignment>containerID = concat("STEVANATO_CHECK_", systemtime()); 
+		                data["OPERATION"] = "CHECK_EPC";
+		                data["UID"] = $local:uidScanned;                
+		                $local:currentContainer = containerID;
+		                $local:info[$local:currentContainer]["DATA"] = data;
+		                writeOnlineContainer($local:currentContainer, $local:info[$local:currentContainer]["DATA"]);
+		                triggerOnlineSync();    
+		            </onLeaveOkPersistAssignment>
 		  </question>
-  
-  
+		  <question key="Q2_EPSILON_RESULT" title="EPSILON_SCREEN" type="41" backNavigationAllowed="true" sortAnswersByClientKey="false" tableRowDetailsEnabled="true" tableOptionsEnabled="true">
+		    <answer key="Q2_EPSILON_DUMMY" nextQuestionKey="Q3_GENERIC_SCREEN" position="0" action="NONE"   dummyAnswer="false" sortAnswerItemsByClientKey="false"/>
+		    <onEnterAssignment>$local:info[$local:currentContainer]["REPLY_DATA"] = readOnlineContainer($local:currentContainer);             
+		                if ($local:info[$local:currentContainer]["REPLY_DATA"] ?eq null)
+		                {
+		                    $local:info[$local:currentContainer] = $local:info[$local:currentContainer]; 
+		                }
+		                </onEnterAssignment>
+		  </question>
 		  <question key="Q3_GENERIC_SCREEN" title="" type="1" backNavigationAllowed="true" sortAnswersByClientKey="false" tableRowDetailsEnabled="true" tableOptionsEnabled="true" labelAlignment="CENTER">
-		    <answer columnSizeType="ROWS" key="Q3_GENERIC_SCREEN_A1" nextQuestionKey="Q3_GENERIC_SCREEN_2" position="0" action="NONE" dummyAnswer="false" sortAnswerItemsByClientKey="false" labelFontStyle="BOLD"/>
-		    <onEnterAssignment>  
-		            setPlaceHolder("%%groupTitle%%", "Result");  
-		            setAnswerData($answer:"Q3_GENERIC_SCREEN_A1", $global:defaultLogo);		                             
-		        </onEnterAssignment>
+		    <answer columnSizeType="ROWS" key="Q3_GENERIC_SCREEN_A1" nextQuestionKey="Q3_GENERIC_SCREEN_2" position="0" action="NONE"   dummyAnswer="false" sortAnswerItemsByClientKey="false" labelFontStyle="BOLD"/>
+		    <onEnterAssignment>setPlaceHolder("%%groupTitle%%", "Result");  
+		                    setAnswerData($answer:"Q3_GENERIC_SCREEN_A1", $global:defaultLogo);                                  
+		                </onEnterAssignment>
 		    <complex linearGroupId="Q3_GENERIC_SCREEN" gridGroupId="GENERIC_SCREEN" groupTitle="%%groupTitle%%" linearInnerScrollbar="false" gridInnerScrollbar="false" gridHorizontalLayout="false" linearPos="0" gridPosX="0" gridPosY="0"/>
 		  </question>
 		  <question key="Q3_GENERIC_SCREEN_2" title="%%title%%" type="1" backNavigationAllowed="true" sortAnswersByClientKey="false" tableRowDetailsEnabled="true" tableOptionsEnabled="true" labelAlignment="CENTER">
-		    <answer columnSizeType="ROWS" key="Q3_GENERIC_SCREEN_2_A1" nextQuestionKey="END" position="0" action="NONE" dummyAnswer="false" sortAnswerItemsByClientKey="false" labelFontStyle="BOLD">
+		    <answer columnSizeType="ROWS" key="Q3_GENERIC_SCREEN_2_A1" nextQuestionKey="END" position="0" action="NONE"   dummyAnswer="false" sortAnswerItemsByClientKey="false" labelFontStyle="BOLD">
 		      <text>%%text%%</text>
 		    </answer>
-		    <onEnterAssignment>
-		    		  
-		            setPlaceHolder("%%title%%", "Result");                     
-		                            
-		            if($local:scanList[$local:currentContainer]["REPLY_DATA"]["UID_FOUND"] ?eq "GREEN"){
-		                setAnswerData($answer:"Q3_GENERIC_SCREEN_2_A1", $global:greenLight);
-		                message = "UID Found";
-		            } 
-		            else {
-		                setAnswerData($answer:"Q3_GENERIC_SCREEN_2_A1", $global:redLight);
-		                message = "UID Not found";
-		            }   
-   		                        
-		            setPlaceHolder("%%text%%", message);                                                             
-		        </onEnterAssignment>
+		    <onEnterAssignment>setPlaceHolder("%%title%%", "Result");                     		                                    
+		                    if($local:info[$local:currentContainer]["REPLY_DATA"]["UID_FOUND"] ?eq "GREEN"){
+		                        setAnswerData($answer:"Q3_GENERIC_SCREEN_2_A1", $global:greenLight);
+		                        message = "UID Found";
+		                    } 
+		                    else {
+		                        setAnswerData($answer:"Q3_GENERIC_SCREEN_2_A1", $global:redLight);
+		                        message = "UID Not found";
+		                    }   
+		                                 
+		                    setPlaceHolder("%%text%%", message);                                                             
+		                </onEnterAssignment>
 		    <complex linearGroupId="Q3_GENERIC_SCREEN" gridGroupId="GENERIC_SCREEN" groupTitle="%%groupTitle%%" linearInnerScrollbar="false" gridInnerScrollbar="false" gridHorizontalLayout="false" linearPos="1" gridPosX="0" gridPosY="1"/>
 		  </question>
-		<name>Verify Product</name>
+		  <syncDownloadAssignment>$local:currentID = "STEVANATO_VERIFICATION";
+		                $global:moveletID[$local:currentID] = $movelet;
+		            </syncDownloadAssignment>
+		  <name>Verify Product</name>
 		</movelet> 
-		<participant participantKey="carlos" name="carlos" deviceAddress="@carlos.benito1@movilizer.com"></participant>
+		<participant participantKey="Stevanato" name="Stevanato" deviceAddress="@stevanato@movilizer.com"></participant>
+		<participant participantKey="Stevanato2" name="Stevanato2" deviceAddress="@stevanato2@movilizer.com"></participant>
+		<participant participantKey="Stevanato3" name="Stevanato3" deviceAddress="@stevanato3@movilizer.com"></participant>
 	</moveletSet>  
 </MovilizerRequest>

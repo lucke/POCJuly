@@ -1,0 +1,71 @@
+<MovilizerRequest requestTrackingKey="" systemId="50001" systemPassword="movilizer" 
+	numResponses="1000" synchronousResponse="true" 
+	useAutoAcknowledge="true" xmlns="http://movilitas.com/movilizer/v14">
+	<moveletDelete moveletKey="STEVANATO_MAIN_SCREEN" moveletKeyExtension="" ignoreExtensionKey="false"/>
+	<moveletSet>
+		<movelet moveletKey="STEVANATO_MAIN_SCREEN" namespace="" mafAppSpace="" privateNamespace="false" icon="1" moveletType="MULTI" metaMoveletType="NONE" initialQuestionKey="Q1_LOGO" transactional="false" validTillDate="9999-12-31T22:59:59.000Z" encryptionAlgorithm="" priority="0" moveletDownloadPriority="0" replyUploadPriority="0" syncPriority="NONE" visible="true" filterValue="" moveletVersion="0" autoExecuteTimeout="1">
+			  <question key="Q1_LOGO" title="" type="1" backNavigationAllowed="true" sortAnswersByClientKey="false" tableRowDetailsEnabled="true" tableOptionsEnabled="true">
+			    <answer key="#Q1_LOGO_1" nextQuestionKey="Q2_MENU" position="0" action="NONE" dummyAnswer="false" sortAnswerItemsByClientKey="false"/>
+			    <onEnterAssignment>setAnswerData($answer:"#Q1_LOGO_1", $global:defaultLogo);
+			    </onEnterAssignment>
+			    <complex linearGroupId="stev1" gridGroupId="stev1" linearInnerScrollbar="true" gridInnerScrollbar="true" gridHorizontalLayout="false" linearPos="0" gridPosX="0" gridPosY="0" gridWidth="15" gridHeight="12" linearHeight="3"/>
+			  </question>
+			  <question key="Q2_MENU" title="Select Operation" type="6" backNavigationAllowed="true" sortAnswersByClientKey="false" tableRowDetailsEnabled="true" tableOptionsEnabled="true">
+			    <answer key="#2_1" nextQuestionKey="Q3_INTERMOVELET_JUMP" position="0" action="NONE"   dummyAnswer="false" sortAnswerItemsByClientKey="false">
+			      <text>Enter Batch Number</text>
+			    </answer>
+			    <answer key="#2_2" nextQuestionKey="Q3_INTERMOVELET_JUMP" position="1" action="NONE"   dummyAnswer="false" sortAnswerItemsByClientKey="false">
+			      <text>Create Aggregation</text>
+			    </answer>
+			    <answer key="#2_3" nextQuestionKey="Q3_INTERMOVELET_JUMP" position="2" action="NONE"   dummyAnswer="false" sortAnswerItemsByClientKey="false">
+			      <text>Print Package ID</text>
+			    </answer>
+			    <answer key="#2_4" nextQuestionKey="Q3_INTERMOVELET_JUMP" position="3" action="NONE"   dummyAnswer="false" sortAnswerItemsByClientKey="false">
+			      <text>Synchronize with Cloud</text>
+			    </answer>
+			    <answer key="#2_5" nextQuestionKey="Q3_INTERMOVELET_JUMP" position="4" action="NONE"   dummyAnswer="false" sortAnswerItemsByClientKey="false">
+			      <text>Verify Product</text>
+			    </answer>
+			    <onLeaveOkPersistAssignment>selected = getQuestionValueNew();
+			         
+			        if (selected ?eq "Enter Batch Number")
+			        {
+			            $local:moveletKey = "STEVANATO_BATCHID_MANAGMENT";
+			        }
+			         
+			        if (selected ?eq "Create Aggregation")
+			        {
+			            $local:moveletKey = "STEVANATO_CREATE_AGGREGATION";
+			        }
+			         
+			        if (selected ?eq "Print Package ID")
+			        {
+			            $local:moveletKey = "";
+			        }
+			         
+			        if (selected ?eq "Synchronize with Cloud")
+			        {
+			            $local:moveletKey = "STEVANATO_SYNC";
+			        }
+			         
+			        if (selected ?eq "Verify Product")
+			        {
+			            $local:moveletKey = "STEVANATO_VERIFICATION";
+			        }
+			         
+			    </onLeaveOkPersistAssignment>
+			    <complex linearGroupId="stev1" gridGroupId="stev1" linearInnerScrollbar="true" gridInnerScrollbar="true" gridHorizontalLayout="false" linearPos="1" gridPosX="0" gridPosY="1" gridWidth="15" gridHeight="12" linearHeight="12"/>
+			  </question>
+			  <question key="Q3_INTERMOVELET_JUMP" type="40" backNavigationAllowed="true" sortAnswersByClientKey="false" tableRowDetailsEnabled="true" tableOptionsEnabled="true">
+			    <answer attributeType="31" key="GS1_Q4_A_1" nextQuestionKey="END" action="NONE"   dummyAnswer="false" sortAnswerItemsByClientKey="false"/>
+			    <text>The referenced Movelet is currently not available</text>
+			    <onEnterAssignment>setAnswerValue($answer:'GS1_Q4_A_1', $global:moveletID[$local:moveletKey]);
+			    </onEnterAssignment>
+			  </question>
+			  <name>Stevanato</name>
+		</movelet> 
+		<participant participantKey="Stevanato" name="Stevanato" deviceAddress="@stevanato@movilizer.com"></participant>
+		<participant participantKey="Stevanato2" name="Stevanato2" deviceAddress="@stevanato2@movilizer.com"></participant>
+		<participant participantKey="Stevanato3" name="Stevanato3" deviceAddress="@stevanato3@movilizer.com"></participant>
+	</moveletSet>  
+</MovilizerRequest>

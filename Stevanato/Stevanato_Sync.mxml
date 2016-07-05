@@ -1,0 +1,19 @@
+<MovilizerRequest requestTrackingKey="" systemId="50001" systemPassword="movilizer" 
+	numResponses="1000" synchronousResponse="true" 
+	useAutoAcknowledge="false" xmlns="http://movilitas.com/movilizer/v14">	
+	<moveletDelete moveletKey="STEVANATO_SYNC" moveletKeyExtension="" ignoreExtensionKey="false"/>
+	<moveletSet>
+		<movelet moveletKey="STEVANATO_SYNC" moveletKeyExtension="" namespace="" mafAppSpace="" privateNamespace="false" icon="1" moveletType="MULTI" metaMoveletType="NONE" initialQuestionKey="Q1_SYNC" transactional="false" validTillDate="9999-12-31T22:59:59.000Z" encryptionAlgorithm="" priority="0" moveletDownloadPriority="0" replyUploadPriority="0" syncPriority="NONE" visible="false" filterValue="" moveletVersion="0">
+		  <question key="Q1_SYNC" type="41" backNavigationAllowed="true" sortAnswersByClientKey="false" tableRowDetailsEnabled="true" tableOptionsEnabled="true">
+		    <answer key="A1" nextQuestionKey="END" action="FULLSYNC" dummyAnswer="false" sortAnswerItemsByClientKey="false"/>
+		  </question>
+		  <syncDownloadAssignment>$local:currentID = "STEVANATO_SYNC";
+		                $global:moveletID[$local:currentID] = $movelet;
+		            </syncDownloadAssignment>
+		  <name>Sync</name>
+		</movelet> 
+		<participant participantKey="Stevanato" name="Stevanato" deviceAddress="@stevanato@movilizer.com"></participant>
+		<participant participantKey="Stevanato2" name="Stevanato2" deviceAddress="@stevanato2@movilizer.com"></participant>
+		<participant participantKey="Stevanato3" name="Stevanato3" deviceAddress="@stevanato3@movilizer.com"></participant>
+	</moveletSet>  
+</MovilizerRequest>
